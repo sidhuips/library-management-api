@@ -19,6 +19,7 @@ public class LibraryServiceImpl implements LibraryService {
 	@Autowired
 	UserDAO user;
 	
+	@Override
 	public List<BookVO> getAllBooks() 
 	{
 		return bookDao.getAllBooks();
@@ -38,7 +39,7 @@ public class LibraryServiceImpl implements LibraryService {
 	public BookVO addBook(BookVO book) {
 		BookVO existingBook = bookDao.findBookById(book.getId());
 		if(existingBook != null)
-			return null;
+			return new BookVO();
 		return bookDao.addBook(book);
 	}
 
@@ -46,7 +47,7 @@ public class LibraryServiceImpl implements LibraryService {
 	public BookVO updateBook(BookVO book) {
 		BookVO existingBook = bookDao.findBookById(book.getId());
 		if(existingBook == null)
-			return null;
+			return new BookVO() ;
 		return bookDao.updateBook(book);
 	}
 	
@@ -54,8 +55,8 @@ public class LibraryServiceImpl implements LibraryService {
 	public BookVO removeBook(BookVO book) {
 		BookVO existingBook = bookDao.findBookById(book.getId());
 		if(existingBook == null)
-			return null;
-		return bookDao.removeBook(book);
+			return new BookVO();
+		return bookDao.removeBook(existingBook);
 	}
 	
 	@Override

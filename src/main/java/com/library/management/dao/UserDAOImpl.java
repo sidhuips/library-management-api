@@ -17,14 +17,7 @@ public class UserDAOImpl implements UserDAO{
 	
     @PersistenceContext
     private EntityManager entityManager;
-	
-	@Override
-	@Transactional
-	public Login findById(String username) {
-		 Login login = entityManager.find(null, username);
-		return login;
-	}
-	
+		
 	@Transactional
 	@Override
 	@SuppressWarnings("unchecked")
