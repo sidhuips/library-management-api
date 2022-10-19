@@ -1,4 +1,4 @@
-package com.library.management.selenium;
+package com.library.management.selenium.angular;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
@@ -19,12 +19,10 @@ import org.testng.annotations.Test;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 
-public class AddBookPageTest {
+public class RemoveBookPageTest {
 	
   public WebDriver driver;
-  
   WebDriverWait wait;
-
   
   @FindBy(id="isbn")
   private WebElement isbn;
@@ -33,28 +31,17 @@ public class AddBookPageTest {
 	private WebElement submitButton;
   
   @Test
-	public void givenOnAddBookPage_whenNonExistingISBNAdded_thenDisplaySuccess() {
+	public void givenOnRemoveBookPage_whenExistingBookRemoved_thenDisplaySuccess() {
 	  driver.navigate().to("http://localhost:4200/product/addBook");
 	  String isbnNo ="book " + Math.random();
 	  isbn.sendKeys(isbnNo);
 	  submitButton.click();
 	  
-	  String validationMessage = "//*[text()='Successfully added Book with ISBN: " + isbnNo +"']";
-	  
-	  wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(validationMessage)));
-		WebElement text = driver.findElement(By.xpath(validationMessage));
-		assertTrue(text.isDisplayed(), "Success page not displayed");
-
-	}
-  
-  @Test
-	public void givenOnAddBookPage_whenExistingISBNAdded_thenDisplayErrorMEssage() {
-	  driver.navigate().to("http://localhost:4200/product/addBook");
-	  String isbnNo ="1";
+	  driver.navigate().to("http://localhost:4200/product/removeBook");
 	  isbn.sendKeys(isbnNo);
 	  submitButton.click();
 	  
-	  String validationMessage = "//*[text()='A book already exists with ISBN: " + isbnNo +"']";
+	  String validationMessage = "//*[text()='Successfully removed Book with ISBN: " + isbnNo +"']";
 	  wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(validationMessage)));
 
 		WebElement text = driver.findElement(By.xpath(validationMessage));
@@ -63,17 +50,29 @@ public class AddBookPageTest {
 	}
   
   @Test
-	public void givendOnAddBookPage_whenExistingISBNAdded_thenDisplayErrorMEssage() {
-	  driver.navigate().to("http://localhost:4200/product/addBook");
-	  submitButton.click();	  
-	  String validationMessage = "//*[text()='Please fill out this field.']";
+	public void givenOnRemoveBookPage_whenNonExistingBookRemoved_thenDisplayErrorMessage() {
+	  driver.navigate().to("http://localhost:4200/product/removeBook");
+	  String isbnNo ="100";
+	  isbn.sendKeys(isbnNo);
+	  submitButton.click();
+	  
+	  String validationMessage = "//*[text()='No book found with ISBN: " + isbnNo +"']";
 	  wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(validationMessage)));
 
-	  String msg = isbn.getAttribute("validationMessage");
-	  assertEquals("Please fill out this field.",msg);
+		WebElement text = driver.findElement(By.xpath(validationMessage));
+		assertTrue(text.isDisplayed(), "Success page not displayed");
 
 	}
   
+  @Test
+	public void givendOnRemoveBookPage_whenNoISBNEntered_thenDisplayValidationMessage() {
+	  driver.navigate().to("http://localhost:4200/product/removeBook");
+	  submitButton.click();	  
+	  String validationMessage = "Please fill out this field.";
+	  String msg = isbn.getAttribute("validationMessage");
+	  assertEquals(validationMessage,msg);
+
+	}
   @BeforeTest
   public void beforeTest() {
 	  
@@ -81,7 +80,7 @@ public class AddBookPageTest {
       WebDriverManager.chromedriver().setup();
 	  driver = new ChromeDriver();
 	  PageFactory.initElements(driver, this);
-	  wait = new WebDriverWait(driver, Duration.ofNanos(60));
+	  wait = new WebDriverWait(driver, Duration.ofNanos(6000));
   }
 
   @AfterTest
