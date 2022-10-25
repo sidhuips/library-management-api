@@ -1,8 +1,9 @@
-package com.library.management.selenium;
+package com.library.management.selenium.angular;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
+import java.time.Duration;
 import java.util.List;
 
 import org.openqa.selenium.By;
@@ -11,6 +12,8 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
@@ -20,6 +23,8 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 public class SearchBookTest {
 	
   public WebDriver driver;
+  
+  WebDriverWait wait;
     
   @FindBy(id="bookName")
   private WebElement bookName;
@@ -33,10 +38,11 @@ public class SearchBookTest {
   @Test
 	public void givenOnSearchBookPage_whenBooksFound_thenDisplayResult() {
 	  String bookToSearch = "The";
-	  driver.navigate().to("http://localhost:8080/library-management-system/library/search");
+	  driver.navigate().to("http://localhost:4200/product/searchBook");
 	  searchString.sendKeys(bookToSearch);
 	  submitButton.click();
-	  
+	  wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("searchResult")));
+
 			
 		WebElement simpleTable = driver.findElement(By.id("searchResult"));
 	    List<WebElement> rows = simpleTable.findElements(By.tagName("tr"));
@@ -48,10 +54,9 @@ public class SearchBookTest {
   @Test
 	public void givenOnSearchBookPage_whenBooksNotFound_thenDisplayEmptyTable() {
 	  String bookToSearch = "xyzzz";
-	  driver.navigate().to("http://localhost:8080/library-management-system/library/search");
+	  driver.navigate().to("http://localhost:4200/product/searchBook");
 	  searchString.sendKeys(bookToSearch);
-	  submitButton.click();
-	  
+	  submitButton.click();	  
 			
 		WebElement simpleTable = driver.findElement(By.id("searchResult"));
 	    List<WebElement> rows = simpleTable.findElements(By.tagName("tr"));
@@ -60,7 +65,7 @@ public class SearchBookTest {
    
   @Test
 	public void givendOnSearchBookPage_whenNoNameEntered_thenDisplayValidationMessage() {
-	  driver.navigate().to("http://localhost:8080/library-management-system/library/search");
+	  driver.navigate().to("http://localhost:4200/product/searchBook");
 	  submitButton.click();	  
 	  String validationMessage = "Please fill out this field.";
 	  String msg = searchString.getAttribute("validationMessage");
@@ -74,10 +79,11 @@ public class SearchBookTest {
       WebDriverManager.chromedriver().setup();
 	  driver = new ChromeDriver();
 	  PageFactory.initElements(driver, this);
+	  wait = new WebDriverWait(driver, Duration.ofNanos(60));
   }
 
   @AfterTest
   public void afterTest() {
-	  driver.close();
+	  //driver.close();
   }
 }

@@ -1,4 +1,4 @@
-package com.library.management.selenium;
+package com.library.management.selenium.springmvc;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
@@ -15,7 +15,7 @@ import org.testng.annotations.Test;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 
-public class AddBookPageTest {
+public class UpdateBookPageTest {
 	
   public WebDriver driver;
   
@@ -26,41 +26,44 @@ public class AddBookPageTest {
 	private WebElement submitButton;
   
   @Test
-	public void givenOnAddBookPage_whenNonExistingISBNAdded_thenDisplaySuccess() {
+	public void givenOnUpdateBookPage_whenExistingBookUpdated_thenDisplaySuccess() {
 	  driver.navigate().to("http://localhost:8080/library-management-system/library/addBook");
 	  String isbnNo ="book " + Math.random();
 	  isbn.sendKeys(isbnNo);
 	  submitButton.click();
 	  
-	  String validationMessage = "//*[text()='Successfully added Book with ISBN: " + isbnNo +"']";
-		WebElement text = driver.findElement(By.xpath(validationMessage));
-		assertTrue(text.isDisplayed(), "Success page not displayed");
-
-	}
-  
-  @Test
-	public void givenOnAddBookPage_whenExistingISBNAdded_thenDisplayErrorMEssage() {
-	  driver.navigate().to("http://localhost:8080/library-management-system/library/addBook");
-	  String isbnNo ="1";
+	  driver.navigate().to("http://localhost:8080/library-management-system/library/updateBook");
 	  isbn.sendKeys(isbnNo);
 	  submitButton.click();
 	  
-	  String validationMessage = "//*[text()='A book already exists with ISBN: " + isbnNo +"']";
+	  String validationMessage = "//*[text()='Successfully updated Book with ISBN: " + isbnNo +"']";
 		WebElement text = driver.findElement(By.xpath(validationMessage));
 		assertTrue(text.isDisplayed(), "Success page not displayed");
 
 	}
   
   @Test
-	public void givendOnAddBookPage_whenExistingISBNAdded_thenDisplayErrorMEssage() {
-	  driver.navigate().to("http://localhost:8080/library-management-system/library/addBook");
+	public void givenOnUpdateBookPage_whenNonExistingBookUpdated_thenDisplayErrorMessage() {
+	  driver.navigate().to("http://localhost:8080/library-management-system/library/updateBook");
+	  String isbnNo ="100";
+	  isbn.sendKeys(isbnNo);
+	  submitButton.click();
+	  
+	  String validationMessage = "//*[text()='No book found with ISBN: " + isbnNo +"']";
+		WebElement text = driver.findElement(By.xpath(validationMessage));
+		assertTrue(text.isDisplayed(), "Success page not displayed");
+
+	}
+  
+  @Test
+	public void givendOnUpdateBookPage_whenNoISBNEntered_thenDisplayValidationMessage() {
+	  driver.navigate().to("http://localhost:8080/library-management-system/library/updateBook");
 	  submitButton.click();	  
 	  String validationMessage = "Please fill out this field.";
 	  String msg = isbn.getAttribute("validationMessage");
 	  assertEquals(validationMessage,msg);
 
 	}
-  
   @BeforeTest
   public void beforeTest() {
 	  

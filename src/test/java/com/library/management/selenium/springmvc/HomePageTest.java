@@ -1,4 +1,4 @@
-package com.library.management.selenium;
+package com.library.management.selenium.springmvc;
 
 import static org.testng.Assert.assertTrue;
 
